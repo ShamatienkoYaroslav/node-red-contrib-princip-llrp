@@ -1,0 +1,30 @@
+<script type="text/javascript">
+  RED.nodes.registerType('princip-llrp-device', {
+    category: 'config',
+    defaults: {
+      ipAddress: { value: '', required: true },
+      port: { value: 5000, required: true }
+    },
+    label: function() {
+      return `${this.ipAddress}:${this.port}`
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="princip-llrp-device">
+  <div class="form-row">
+    <label for="node-config-input-ipAddress">
+      <i class="fa fa-tag"></i> 
+      IP Address
+    </label>
+    <input type="text" id="node-config-input-ipAddress" placeholder="Device IP Address">
+  </div>
+
+  <div class="form-row">
+    <label for="node-config-input-port">
+      <i class="fa fa-tag"></i> 
+      Port
+    </label>
+    <input type="text" id="node-config-input-port" placeholder="Device Port">
+  </div>
+</script>

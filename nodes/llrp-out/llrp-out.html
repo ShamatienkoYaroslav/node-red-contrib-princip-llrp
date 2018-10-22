@@ -1,0 +1,47 @@
+<script type="text/javascript">
+  RED.nodes.registerType('princip-llrp-out',{
+    category: 'Princip',
+    defaults: {
+      name: { 
+        value: 'LLRP output', 
+        required: true 
+      },
+      device: { 
+        value: undefined,
+        required: true,
+        type: 'princip-llrp-device'
+      }
+    },
+    inputs: 0,
+    outputs: 1,
+    color: '#E2D96E ',
+    paletteLabel: 'LLRP output',
+    label: function() {
+      return this.name || 'LLRP output'
+    },
+    align: 'right',
+    icon: 'light.png'
+  });
+</script>
+
+<script type="text/x-red" data-template-name="princip-llrp-out">
+  <div class="form-row">
+    <label for="node-input-name">
+      <i class="fa fa-tag"></i> 
+      Name
+    </label>
+    <input type="text" id="node-input-name" placeholder="Name">
+  </div>
+
+  <div class="form-row">
+    <label for="node-input-device">
+      <i class="fa fa-tag"></i> 
+      Device
+    </label>
+    <input type="text" id="node-input-device" placeholder="Device">
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="princip-llrp-out">
+  <p>Test</p>
+</script>
