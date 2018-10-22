@@ -3,10 +3,13 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
+  "keywords": [
+    "IOT",
+    "LLRP",
+    "Node-Red",
+    "NodeRed",
+    "Node Red"
+  ],
   "author": "Yaroslav <shamatienko.yaroslav@gmail.com>",
   "license": "ISC",
   "node-red": {

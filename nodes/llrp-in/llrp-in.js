@@ -1,70 +1,71 @@
 module.exports = function(RED) {
-  function send(config) {
+  function InputNode(config) {
     RED.nodes.createNode(this, config);
 
-    var node = this;
-    this.on('input', function(msg) {
-      var device = RED.nodes.getNode(config.device);
+    this.status({ fill: "red", shape: "ring", text: "disconnected" });
 
-      var validDevice = true;
+    var device = RED.nodes.getNode(config.device);
 
-      if (!device.ipAddress) {
-        node.error('Provide LLRP-device IP address!')
+    if (!device.ipAddress) {
+      node.error('Provide LLRP-device IP address!')
+    }
+
+    if (!device.port) {
+      node.error('Provide LLRP-device port!')
+    }
+    
+    var reader = null;
+
+    var globalContext = this.context().global;
+    var p = globalContext.get('princip') || {};
+    var llrp = p.llrp || {};
+    var devices = llrp.devices || [];
+
+    for (var d of devices) {
+      if (d.ipAddress === device.ipAddress && d.port === device.port) {
+        reader = d.reader;
       }
+    }
+    
+    if (!reader) {
+      var Reader = require('../../lib/llrp/LLRPMain');
+      var reader = new Reader({
+        ipaddress: device.ipAddress,
+        port: device.port,
+        log: false
+      });
+      try {
+        reader.connect();
 
-      if (!device.port) {
-        node.error('Provide LLRP-device port!')
-      }
-
-      if (validDevice) {
-        var reader = null;
-
-        var globalContext = this.context().global;
-        var p = globalContext.get('princip') || {};
-        var llrp = p.llrp || {};
-        var devices = llrp.devices || [];
-
-        var deviceExists = false;
-        for (var d of devices) {
-          if (d.ipAddress === device.ipAddress && d.port === device.port) {
-            reader = d.reader;
-            deviceExists = true;
-          }
-        }
-        
-        if (!deviceExists) {
-          var Reader = require('../../lib/llrp/LLRPMain');
-          var reader = new Reader({
-            ipaddress: device.ipAddress,
-            port: device.port,
-            log: false
-          });
-          try {
-            reader.connect();
-
-            devices.push({
-              ipAddress: device.ipAddress,
-              port: device.port,
-              reader: reader
-            });
-          } catch (error) {
-            node.error(error);
-          }
-        }
+        devices.push({
+          ipAddress: device.ipAddress,
+          port: device.port,
+          reader: reader
+        });
 
         p.llrp = llrp;
         p.llrp.devices = devices;
 
         globalContext.set('princip', p);
+      } catch (error) {
+        reader = null;
+        node.error(error);
+      }
+    }
 
-        try {
-          reader.emit('message', msg.payload);
-        } catch (error) {
-          node.error(error);
-        }
+    if (reader) {
+      this.status({ fill: "green", shape: "dot", text: "connected" });
+    }
+
+    var node = this;
+    this.on('input', function(msg) {
+      try {
+        reader.emit('message', msg.payload);
+      } catch (error) {
+        node.error(error);
       }
     });
   }
 
-  RED.nodes.registerType('princip-llrp-in', send);
+  RED.nodes.registerType('princip-llrp-in', InputNode);
 }
