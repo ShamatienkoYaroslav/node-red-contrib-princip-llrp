@@ -6,6 +6,7 @@ module.exports = function(RED) {
 
     this.ipAddress = config.ipAddress || '';
     this.port = config.port || 5000;
+    this.log = config.log;
   }
 
   RED.nodes.registerType('princip-llrp-device', Device)

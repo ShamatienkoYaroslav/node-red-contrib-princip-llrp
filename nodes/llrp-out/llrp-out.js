@@ -23,7 +23,8 @@ module.exports = function(RED) {
       reader = new Reader({
         ipaddress: device.ipAddress,
         port: device.port,
-        log: false
+        log: device.log,
+        console: this.warn
       });
       try {
         reader.connect();
@@ -48,7 +49,7 @@ module.exports = function(RED) {
       this.status({ fill: "green", shape: "dot", text: "connected" });
 
       var node = this;
-      reader.on('answer', function(a) {
+      reader.on('princip-answer', function(a) {
         node.send({ payload: a });
       });
     } else {

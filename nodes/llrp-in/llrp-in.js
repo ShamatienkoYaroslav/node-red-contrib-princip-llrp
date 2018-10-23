@@ -32,7 +32,8 @@ module.exports = function(RED) {
       var reader = new Reader({
         ipaddress: device.ipAddress,
         port: device.port,
-        log: false
+        log: device.log,
+        console: this.warn
       });
       try {
         reader.connect();
@@ -60,7 +61,7 @@ module.exports = function(RED) {
     var node = this;
     this.on('input', function(msg) {
       try {
-        reader.emit('message', msg.payload);
+        reader.emit('princip-message', msg.payload);
       } catch (error) {
         node.error(error);
       }
