@@ -5,7 +5,7 @@ module.exports = function(RED) {
     RED.nodes.createNode(this, config);
 
     this.ipAddress = config.ipAddress || '';
-    this.port = config.port || 5000;
+    this.port = config.port || 5084;
     this.log = config.log;
   }
 
