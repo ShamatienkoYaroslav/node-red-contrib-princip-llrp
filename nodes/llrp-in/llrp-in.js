@@ -13,7 +13,7 @@ module.exports = function(RED) {
     if (!device.port) {
       node.error('Provide LLRP-device port!')
     }
-    
+
     var reader = null;
 
     var globalContext = this.context().global;
@@ -26,16 +26,17 @@ module.exports = function(RED) {
         reader = d.reader;
       }
     }
-    
+
     if (!reader) {
       var Reader = require('../../lib/llrp/LLRPMain');
-      var reader = new Reader({
-        ipaddress: device.ipAddress,
-        port: device.port,
-        log: device.log,
-        console: this.warn
-      });
       try {
+        var reader = new Reader({
+          ipaddress: device.ipAddress,
+          port: device.port,
+          log: device.log,
+          console: this.warn
+        });
+
         reader.connect();
 
         devices.push({

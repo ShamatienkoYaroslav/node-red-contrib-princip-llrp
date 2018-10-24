@@ -10,7 +10,7 @@ module.exports = function(RED) {
     var p = globalContext.get('princip') || {};
     var llrp = p.llrp || {};
     var devices = llrp.devices || [];
-  
+
     for (var d of devices) {
       if (d.ipAddress === device.ipAddress && d.port === device.port) {
         reader = d.reader;
@@ -20,13 +20,14 @@ module.exports = function(RED) {
 
     if (!reader) {
       var Reader = require('../../lib/llrp/LLRPMain');
-      reader = new Reader({
-        ipaddress: device.ipAddress,
-        port: device.port,
-        log: device.log,
-        console: this.warn
-      });
       try {
+          reader = new Reader({
+            ipaddress: device.ipAddress,
+            port: device.port,
+            log: device.log,
+            console: this.warn
+        });
+
         reader.connect();
 
         devices.push({
@@ -52,6 +53,20 @@ module.exports = function(RED) {
       reader.on('princip-answer', function(a) {
         node.send({ payload: a });
       });
+
+      reader.on('disconnect',function(b){
+        node.status({ fill: "red", shape: "ring", text: "client disconnected" });
+      });
+
+      reader.on('timeout',function(c){
+        node.status({ fill: "red", shape: "ring", text: "timeout" });
+      });
+
+      reader.on('error',function(d){
+        node.status({ fill: "yellow", shape: "ring", text: "error" });
+      });
+
+
     } else {
       this.status({ fill: "red", shape: "ring", text: "disconnected" });
     }
