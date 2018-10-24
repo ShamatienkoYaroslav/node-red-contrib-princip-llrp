@@ -1,3 +1,5 @@
+var utils = require('../../utils');
+
 module.exports = function(RED) {
   function InputNode(config) {
     RED.nodes.createNode(this, config);
@@ -14,58 +16,82 @@ module.exports = function(RED) {
       node.error('Provide LLRP-device port!')
     }
 
-    var reader = null;
+    // var reader = null;
 
-    var globalContext = this.context().global;
-    var p = globalContext.get('princip') || {};
-    var llrp = p.llrp || {};
-    var devices = llrp.devices || [];
+    // var globalContext = this.context().global;
+    // var p = globalContext.get('princip') || {};
+    // var llrp = p.llrp || {};
+    // var devices = llrp.devices || [];
 
-    for (var d of devices) {
-      if (d.ipAddress === device.ipAddress && d.port === device.port) {
-        reader = d.reader;
-      }
-    }
+    // for (var d of devices) {
+    //   if (d.ipAddress === device.ipAddress && d.port === device.port) {
+    //     reader = d.reader;
+    //   }
+    // }
 
-    if (!reader) {
-      var Reader = require('../../lib/llrp/LLRPMain');
-      try {
-        var reader = new Reader({
-          ipaddress: device.ipAddress,
-          port: device.port,
-          log: device.log,
-          console: this.warn
-        });
+    // if (!reader) {
+    //   var Reader = require('../../lib/llrp/LLRPMain');
+    //   try {
+    //     var reader = new Reader({
+    //       ipaddress: device.ipAddress,
+    //       port: device.port,
+    //       log: device.log,
+    //       console: this.warn
+    //     });
 
-        reader.connect();
+    //     reader.connect();
 
-        devices.push({
-          ipAddress: device.ipAddress,
-          port: device.port,
-          reader: reader
-        });
+    //     devices.push({
+    //       ipAddress: device.ipAddress,
+    //       port: device.port,
+    //       reader: reader
+    //     });
 
-        p.llrp = llrp;
-        p.llrp.devices = devices;
+    //     p.llrp = llrp;
+    //     p.llrp.devices = devices;
 
-        globalContext.set('princip', p);
-      } catch (error) {
-        reader = null;
-        node.error(error);
-      }
-    }
+    //     globalContext.set('princip', p);
+    //   } catch (error) {
+    //     reader = null;
+    //     node.error(error);
+    //   }
+    // }
 
-    if (reader) {
-      this.status({ fill: "green", shape: "dot", text: "connected" });
-    }
+    var reader = utils.getReader(this, device);
 
     var node = this;
+    if (reader) {
+      reader.e.on('princip-answer', function(a) {
+        if (a) {
+          node.status({ fill: "green", shape: "dot", text: "connected" });
+        }
+      });
+    }
+
     this.on('input', function(msg) {
       try {
-        reader.emit('princip-message', msg.payload);
+        utils.reconnectReader(reader);
+
+        reader.e.emit('princip-message', msg.payload);
       } catch (error) {
         node.error(error);
       }
+    });
+
+    reader.e.on('disconnect',function(b){
+      node.status({ fill: "red", shape: "ring", text: "client disconnected" });
+    });
+
+    reader.e.on('timeout',function(c){
+      node.status({ fill: "red", shape: "ring", text: "timeout" });
+    });
+
+    reader.e.on('error',function(d){
+      node.status({ fill: "yellow", shape: "ring", text: "error" });
+    });
+
+    this.on('close', function() {
+      utils.disconnectReader(node, device, reader);
     });
   }
 
