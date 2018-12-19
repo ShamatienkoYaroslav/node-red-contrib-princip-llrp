@@ -4,7 +4,7 @@ module.exports = function(RED) {
   function OutputNode(config) {
     RED.nodes.createNode(this, config);
 
-    this.status({ fill: "red", shape: "ring", text: "disconnected" });
+    this.status({ fill: "grey", shape: "ring", text: "initialize" });
 
     var device = RED.nodes.getNode(config.device);
 
@@ -83,7 +83,7 @@ module.exports = function(RED) {
 
 
     } else {
-      this.status({ fill: "red", shape: "ring", text: "disconnected" });
+      this.status({ fill: "grey", shape: "ring", text: "notinitialized" });
     }
 
     this.on('close', function() {

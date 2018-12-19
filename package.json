@@ -1,6 +1,6 @@
 {
   "name": "node-red-contrib-princip-llrp",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "",
   "main": "index.js",
   "keywords": [
@@ -14,7 +14,7 @@
     "Node Red"
   ],
   "author": "Yaroslav <shamatienko.yaroslav@gmail.com>",
-  "license": "ISC",
+  "license": "MIT",
   "node-red": {
     "nodes": {
       "princip-llrp-device": "./nodes/llrp-device/llrp-device.js",
