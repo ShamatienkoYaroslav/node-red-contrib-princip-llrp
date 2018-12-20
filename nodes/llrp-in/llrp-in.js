@@ -60,20 +60,22 @@ module.exports = function(RED) {
     var reader = utils.getReader(this, device);
 
     var node = this;
-    if (reader) {
-      reader.e.on('princip-answer', function(a) {
-        if (a) {
-          node.status({ fill: "green", shape: "dot", text: "connected" });
-        }
-      });
-    }
+    // if (reader) {
+    //   reader.e.on('princip-answer', function(a) {
+    //     if (a) {
+    //       node.status({ fill: "blue", shape: "dot", text: "receiving data" });
+    //     }
+    //   });
+    // }
 
     this.on('input', function(msg) {
       try {
         utils.reconnectReader(reader);
         reader.e.emit('princip-message', msg.payload);
+        node.status({ fill: "blue", shape: "dot", text: "node sending data" });
       } catch (error) {
         node.error(error);
+        node.status({ fill: "yellow", shape: "dot", text: "error on sending data" });
       }
     });
 
@@ -90,7 +92,7 @@ module.exports = function(RED) {
     });
 
     this.on('close', function() {
-      node.status({ fill: "red", shape: "ring", text: "closed connection" });
+      node.status({ fill: "red", shape: "ring", text: "node closed connection" });
       utils.disconnectReader(node, device, reader);
     });
   }

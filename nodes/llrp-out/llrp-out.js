@@ -64,7 +64,7 @@ module.exports = function(RED) {
       var node = this;
       reader.e.on('princip-answer', function(a) {
         if (a) {
-          node.status({ fill: "green", shape: "dot", text: "connected" });
+          node.status({ fill: "blue", shape: "dot", text: "receiving data" });
         }
         node.send({ payload: a });
       });
@@ -87,7 +87,7 @@ module.exports = function(RED) {
     }
 
     this.on('close', function() {
-      node.status({ fill: "red", shape: "ring", text: "closed connection" });
+      node.status({ fill: "red", shape: "ring", text: "node closed connection" });
       utils.disconnectReader(node, device, reader);
     });
   }
