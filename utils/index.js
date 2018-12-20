@@ -4,7 +4,7 @@ module.exports = {
   disconnectReader: function(node, device, reader) {
     if (reader) {
       reader.disconnect();
-    } 
+    }
 
     var globalContext = node.context().global;
     var p = globalContext.get('princip') || {};
@@ -81,6 +81,7 @@ module.exports = {
       } catch (error) {
         reader = null;
         node.error(error);
+        node.status({ fill: "red", shape: "ring", text: "init error" });
       }
     }
 
