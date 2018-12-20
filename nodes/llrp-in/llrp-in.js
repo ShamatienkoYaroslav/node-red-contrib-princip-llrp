@@ -70,9 +70,8 @@ module.exports = function(RED) {
 
     this.on('input', function(msg) {
       try {
-        utils.reconnectReader(reader);
+        // utils.reconnectReader(reader);
         reader.e.emit('princip-message', msg.payload);
-        node.status({ fill: "blue", shape: "dot", text: "node sending data" });
       } catch (error) {
         node.error(error);
         node.status({ fill: "yellow", shape: "dot", text: "error on sending data" });
@@ -95,10 +94,10 @@ module.exports = function(RED) {
       node.status({ fill: "yellow", shape: "ring", text: "error" });
     });
 
-    this.on('close', function() {
-      node.status({ fill: "red", shape: "ring", text: "node closed connection" });
-      utils.disconnectReader(node, device, reader);
-    });
+    // this.on('close', function() {
+    //   node.status({ fill: "red", shape: "ring", text: "node closed connection" });
+    //   utils.disconnectReader(node, device, reader);
+    // });
   }
 
   RED.nodes.registerType('princip-llrp-in', InputNode);

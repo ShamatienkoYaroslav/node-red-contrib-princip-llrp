@@ -2,7 +2,7 @@ var Reader = require('../lib/llrp/LLRPMain');
 
 module.exports = {
   disconnectReader: function(node, device, reader) {
-    if (reader) {
+    if (reader && reader.connected) {
       reader.disconnect();
     }
 

@@ -90,10 +90,10 @@ module.exports = function(RED) {
       this.status({ fill: "grey", shape: "ring", text: "notinitialized" });
     }
 
-    this.on('close', function() {
-      node.status({ fill: "red", shape: "ring", text: "node closed connection" });
-      utils.disconnectReader(node, device, reader);
-    });
+    // this.on('close', function() {
+    //   node.status({ fill: "red", shape: "ring", text: "node closed connection" });
+    //   utils.disconnectReader(node, device, reader);
+    // });
   }
 
   RED.nodes.registerType('princip-llrp-out', OutputNode);
