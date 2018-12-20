@@ -69,6 +69,10 @@ module.exports = function(RED) {
         node.send({ payload: a });
       });
 
+      reader.e.on('connect',function(b){
+        node.status({ fill: "green", shape: "ring", text: b });
+      });
+
       reader.e.on('disconnect',function(b){
         node.status({ fill: "red", shape: "ring", text: "client disconnected" });
       });
