@@ -71,7 +71,6 @@ module.exports = function(RED) {
     this.on('input', function(msg) {
       try {
         utils.reconnectReader(reader);
-
         reader.e.emit('princip-message', msg.payload);
       } catch (error) {
         node.error(error);
@@ -91,6 +90,7 @@ module.exports = function(RED) {
     });
 
     this.on('close', function() {
+      node.status({ fill: "red", shape: "ring", text: "closed connection" });
       utils.disconnectReader(node, device, reader);
     });
   }

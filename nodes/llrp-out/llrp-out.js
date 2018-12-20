@@ -87,6 +87,7 @@ module.exports = function(RED) {
     }
 
     this.on('close', function() {
+      node.status({ fill: "red", shape: "ring", text: "closed connection" });
       utils.disconnectReader(node, device, reader);
     });
   }
